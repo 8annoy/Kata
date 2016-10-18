@@ -1,3 +1,7 @@
+/**
+ * Created by eitannoy on 10/11/16.
+ */
+
 package test.account;
 
 import org.junit.After;
@@ -9,9 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import account.Account;
-/**
- * Created by eitannoy on 10/11/16.
- */
+
 public class AccountTest {
 
     private final String EMPTY_STATEMENT = "New account, balance is 0.\n";

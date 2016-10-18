@@ -1,0 +1,27 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+version = 0.1
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+
+    // Utils
+    compileOnly "org.projectlombok:lombok:1.16.10"
+
+    // Testing
+    testCompile "org.hamcrest:hamcrest-all:1.3"
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.9.5'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}
+
