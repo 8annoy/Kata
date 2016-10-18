@@ -1,3 +1,5 @@
+package test.account;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -6,6 +8,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import account.Account;
 /**
  * Created by eitannoy on 10/11/16.
  */
