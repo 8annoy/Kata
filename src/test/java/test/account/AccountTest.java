@@ -11,17 +11,26 @@ import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 import account.Account;
 
 public class AccountTest {
 
-    private final String EMPTY_STATEMENT = "New account, balance is 0.\n";
+    private final String EMPTY_STATEMENT = "New account, balance is 0.";
     private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    private Account account;
 
     @Before
     public void setupStream() {
         System.setOut(new PrintStream(outStream));
+    }
+
+    @Before
+    public void setupAccount() {
+        account = new Account();
     }
 
     @After
@@ -31,8 +40,25 @@ public class AccountTest {
 
     @Test
     public void shouldPrintStatementForEmptyAccount() {
-        Account account = new Account();
+        validatePrint("Date | Amount | Balance");
+    }
+
+    @Test
+    public void shouldTrackDeposits() {
+        account.deposit(124);
+        account.deposit(212);
+        validatePrint(
+                "Date       | Amount | Balance",
+                today() + " | 124    | 124",
+                today() + " | 212    | 336");
+    }
+
+    private String today() {
+        return new SimpleDateFormat("MM/dd/yyyy").format(new Date());
+    }
+
+    private void validatePrint(String... expected) {
         account.printStatement();
-        Assert.assertEquals(EMPTY_STATEMENT, outStream.toString());
+        Assert.assertArrayEquals("Expected: " + Arrays.asList(expected) + "\nActual: " + outStream.toString(), expected, outStream.toString().split("\n"));
     }
 }
