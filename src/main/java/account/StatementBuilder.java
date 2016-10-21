@@ -1,7 +1,6 @@
 package account;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -9,8 +8,8 @@ import java.util.LinkedList;
  * Created by eitannoy on 10/19/16.
  */
 public class StatementBuilder {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final LinkedList<AccountTransaction> transactions;
-    private final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
     private int dateWidth = 4, amountWidth = 6;
 
     public StatementBuilder(LinkedList<AccountTransaction> transactions) {
@@ -25,7 +24,7 @@ public class StatementBuilder {
 
     private String[] alignColumns(LinkedList<String> rows) {
         String[] result = new String[rows.size()];
-        for(int i=0; i < rows.size(); i++) {
+        for(int i = 0; i < rows.size(); i++) {
             result[i] = addPadding(rows.get(i));
         }
         return result;
@@ -50,13 +49,13 @@ public class StatementBuilder {
         LinkedList<String> result = new LinkedList<>();
         for(AccountTransaction trx : transactions) {
             updateColumnWidths(trx);
-            result.add(new StringBuilder(df.format(trx.getDate())).append("|").append(trx.getAmount()).append("|").append(trx.getBalance()).toString());
+            result.add(new StringBuilder(trx.getDate().format(FORMATTER)).append("|").append(trx.getAmount()).append("|").append(trx.getBalance()).toString());
         }
         return result;
     }
 
     private void updateColumnWidths(AccountTransaction trx) {
-        dateWidth = Math.max(dateWidth, df.format(trx.getDate()).length());
+        dateWidth = Math.max(dateWidth, (trx.getDate().format(FORMATTER)).length());
         amountWidth = Math.max(amountWidth, String.valueOf(trx.getAmount()).length());
     }
 
