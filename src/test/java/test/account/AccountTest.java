@@ -22,7 +22,7 @@ import org.mockito.Mockito;
 
 public class AccountTest {
 
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
     private Account account;
     private DateProvider mockDateProvider;
@@ -55,14 +55,14 @@ public class AccountTest {
         account.deposit(1663);
         validatePrint(
                 "Date       | Amount | Balance",
-                today() + " | 124    | 124",
-                today() + " | 212    | 336",
+                today() + " | 1663   | 2001",
                 today() + " | 2      | 338",
-                today() + " | 1663   | 2001");
+                today() + " | 212    | 336",
+                today() + " | 124    | 124");
     }
 
     @Test
-    public void shouldAllignAmountColumnByLongestAmount() {
+    public void shouldAlignAmountColumnByLongestAmount() {
         account.deposit(1);
         validatePrint(
                 "Date       | Amount | Balance",
@@ -70,8 +70,24 @@ public class AccountTest {
         account.deposit(2222222);
         validatePrint(
                 "Date       | Amount  | Balance",
-                today() + " | 1       | 1",
-                today() + " | 2222222 | 2222223");
+                today() + " | 2222222 | 2222223",
+                today() + " | 1       | 1");
+    }
+
+    @Test
+    public void shouldPrintStatementAfterEachTransaction() {
+        account.deposit(1);
+        validatePrint("Date       | Amount | Balance",
+                today() + " | 1      | 1");
+        account.deposit(2);
+        validatePrint("Date       | Amount | Balance",
+                today() + " | 2      | 3",
+                today() + " | 1      | 1");
+        account.deposit(3);
+        validatePrint("Date       | Amount | Balance",
+                today() + " | 3      | 6",
+                today() + " | 2      | 3",
+                today() + " | 1      | 1");
     }
 
     @Test
@@ -85,8 +101,26 @@ public class AccountTest {
         account.deposit(4);
         validatePrint(
                 "Date       | Amount | Balance",
-                "11/22/2016 | 3      | 3",
-                "12/21/2016 | 4      | 7");
+                "12/21/2016 | 4      | 7",
+                "11/22/2016 | 3      | 3");
+    }
+
+    @Test
+    public void shouldTrackWithdrawal() {
+        account.withdraw(42);
+        validatePrint(
+                "Date       | Amount | Balance",
+                today() + " | -42    | -42");
+    }
+
+    @Test
+    public void shouldTrackDepositThenWithdrawal() {
+        account.deposit(112);
+        account.withdraw(35);
+        validatePrint(
+                "Date       | Amount | Balance",
+                today() + " | -35    | 77",
+                today() + " | 112    | 112");
     }
 
     private String today() {

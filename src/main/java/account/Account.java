@@ -28,7 +28,10 @@ public class Account {
     }
 
     public void deposit(int amount) {
-        transactions.add(new AccountTransaction(dp.now(), amount, balance += amount));
+        transactions.addFirst(new AccountTransaction(dp.now(), amount, balance += amount));
     }
 
+    public void withdraw(int amount) {
+        deposit(-amount);
+    }
 }
