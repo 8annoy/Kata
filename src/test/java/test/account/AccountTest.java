@@ -34,7 +34,9 @@ public class AccountTest {
 
     @Before
     public void setupAccount() {
-        account = new Account(new DateProviderImpl());
+        mockDateProvider = Mockito.mock(DateProvider.class);
+        Mockito.when(mockDateProvider.now()).thenReturn(LocalDate.parse("01/01/2016", FORMATTER));
+        account = new Account(mockDateProvider);
     }
 
     @After
@@ -55,10 +57,10 @@ public class AccountTest {
         account.deposit(1663);
         validatePrint(
                 "Date       | Amount | Balance",
-                today() + " | 1663   | 2001",
-                today() + " | 2      | 338",
-                today() + " | 212    | 336",
-                today() + " | 124    | 124");
+                "01/01/2016 | 1663   | 2001",
+                "01/01/2016 | 2      | 338",
+                "01/01/2016 | 212    | 336",
+                "01/01/2016 | 124    | 124");
     }
 
     @Test
@@ -66,28 +68,28 @@ public class AccountTest {
         account.deposit(1);
         validatePrint(
                 "Date       | Amount | Balance",
-                today() + " | 1      | 1");
+                "01/01/2016 | 1      | 1");
         account.deposit(2222222);
         validatePrint(
                 "Date       | Amount  | Balance",
-                today() + " | 2222222 | 2222223",
-                today() + " | 1       | 1");
+                "01/01/2016 | 2222222 | 2222223",
+                "01/01/2016 | 1       | 1");
     }
 
     @Test
     public void shouldPrintStatementAfterEachTransaction() {
         account.deposit(1);
         validatePrint("Date       | Amount | Balance",
-                today() + " | 1      | 1");
+                "01/01/2016 | 1      | 1");
         account.deposit(2);
         validatePrint("Date       | Amount | Balance",
-                today() + " | 2      | 3",
-                today() + " | 1      | 1");
+                "01/01/2016 | 2      | 3",
+                "01/01/2016 | 1      | 1");
         account.deposit(3);
         validatePrint("Date       | Amount | Balance",
-                today() + " | 3      | 6",
-                today() + " | 2      | 3",
-                today() + " | 1      | 1");
+                "01/01/2016 | 3      | 6",
+                "01/01/2016 | 2      | 3",
+                "01/01/2016 | 1      | 1");
     }
 
     @Test
@@ -110,7 +112,7 @@ public class AccountTest {
         account.withdraw(42);
         validatePrint(
                 "Date       | Amount | Balance",
-                today() + " | -42    | -42");
+                "01/01/2016 | -42    | -42");
     }
 
     @Test
@@ -119,12 +121,8 @@ public class AccountTest {
         account.withdraw(35);
         validatePrint(
                 "Date       | Amount | Balance",
-                today() + " | -35    | 77",
-                today() + " | 112    | 112");
-    }
-
-    private String today() {
-        return LocalDate.now().format(FORMATTER);
+                "01/01/2016 | -35    | 77",
+                "01/01/2016 | 112    | 112");
     }
 
     private void validatePrint(String... expected) {
